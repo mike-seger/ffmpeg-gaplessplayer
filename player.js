@@ -5,11 +5,11 @@ const playlist = [
 ]
 
 const audioContext = new AudioContext()
-let audio = new Audio();
+let startTime = null;
 let currentBufferSource = null
 let currentTrackIndex = 0
 let currentBuffer = null
-let nextTrack = null
+let nextBuffer = null 
 
 function formatTime(milliseconds) {
   const seconds = milliseconds / 1000
@@ -48,37 +48,6 @@ async function loadBuffer(url, callback) {
   callback(audioBuffer);
 }
 
-/*
-async function loadBuffer(url, callback) {
-  const { createFFmpeg, fetchFile } = FFmpeg;
-  const ffmpeg = createFFmpeg({ log: false });
-  await ffmpeg.load();
-
-  const response = await fetch(url);
-  const data = await response.arrayBuffer();
-
-  ffmpeg.FS('writeFile', 'input.m4a', new Uint8Array(data));
-
-  await ffmpeg.run('-i', 'input.m4a', '-f', 's16le', '-acodec', 'pcm_s16le', '-ar', '44100', 'output.pcm');
-  const output = ffmpeg.FS('readFile', 'output.pcm');
-
-  const audioData = new Float32Array(output.buffer);
-  const numberOfChannels = 2;
-  const sampleRate = 44100;
-  const length = audioData.length / numberOfChannels;
-
-  const audioBuffer = audioContext.createBuffer(numberOfChannels, length, sampleRate);
-  for (let channel = 0; channel < numberOfChannels; channel++) {
-    const channelData = audioBuffer.getChannelData(channel);
-    for (let i = 0; i < length; i++) {
-      channelData[i] = audioData[i * numberOfChannels + channel] / 32768;
-    }
-  }
-
-  callback(audioBuffer);
-}
-*/
-
 function playBuffer(buffer) {
   if (currentBufferSource) {
     currentBufferSource.stop()
@@ -89,7 +58,10 @@ function playBuffer(buffer) {
   currentBufferSource.buffer = currentBuffer
   currentBufferSource.connect(audioContext.destination)
 
-  currentBufferSource.start()
+  startTime = audioContext.currentTime;
+  currentBufferSource.start(startTime);
+ //currentBufferSource.start()
+  updateProgress()
 
   console.log(currentTrackIndex)
   currentTrackIndex = currentTrackIndex % playlist.length
@@ -98,7 +70,6 @@ function playBuffer(buffer) {
     .replace(/.* - [0-9][0-9]\. /, '')
     .replace(/\.(m4a|mp3|flac)$/, "")
 
-  // Preload and play the next track when the current track ends
   currentBufferSource.onended = () => {
     if (nextBuffer) {
       playBuffer(nextBuffer)
@@ -106,30 +77,6 @@ function playBuffer(buffer) {
       preloadNextTrack()
     }
   };
-}
-
-function playTrack(trackIndex) {
-  console.log(trackIndex)
-  trackIndex = trackIndex % playlist.length
-  if (trackIndex < 0) trackIndex = 0
-  currentTrackIndex = trackIndex
-  trackName.textContent = playlist[trackIndex]
-    .replace(/.* - [0-9][0-9]\. /, '')
-    .replace(/\.(m4a|mp3|flac)$/, "")
-
-  const asset = AV.Asset.fromURL(playlist[trackIndex])
-  currentTrack = new AV.Player(asset)
-
-  currentTrack.on('end', () => {
-    playTrack(trackIndex + 1)
-  })
-
-  if (trackIndex + 1 < playlist.length) {
-    const nextAsset = AV.Asset.fromURL(playlist[trackIndex + 1])
-    nextTrack = new AV.Player(nextAsset)
-  }
-
-  currentTrack.play()
 }
 
 function preloadNextTrack() {
@@ -159,6 +106,7 @@ playButton.addEventListener('click', () => {
     });
   } else {
     audioContext.resume();
+    updateProgress();
   }
 });
 
@@ -172,93 +120,73 @@ nextButton.addEventListener('click', () => {
   if (currentBufferSource) {
     currentBufferSource.stop();
     currentTrackIndex++;
-    currentTrackIndex = (currentTrackIndex+playlist.length+1) % playlist.length;
-    //if (currentTrackIndex < playlist.length) {
-      playBuffer(nextBuffer);
-      preloadNextTrack();
-    //}
+    currentTrackIndex %= playlist.length;
+    playBuffer(nextBuffer);
+    preloadNextTrack();
   }
 });
 
 previousButton.addEventListener('click', () => {
   if (currentBufferSource) {
     currentBufferSource.stop();
-    currentTrackIndex = (currentTrackIndex+playlist.length-1) % playlist.length;
-    playBuffer(nextBuffer);
-    preloadNextTrack();
+    currentTrackIndex = (currentTrackIndex + playlist.length - 1) % playlist.length;
+    loadBuffer(playlist[currentTrackIndex], (buffer) => {
+      playBuffer(buffer);
+      preloadNextTrack();
+    });
   }
 });
-/*
-previousButton.addEventListener('click', () => {
-  if (currentTrack) {
-    currentTrack.stop()
-    playTrack(currentTrackIndex - 1)
-  }
-})
-
-nextButton.addEventListener('click', () => {
-  if (currentTrack) {
-    currentTrack.stop()
-    playTrack(currentTrackIndex + 1)
-  }
-})*/
-
-/*
-function updateProgress() {
-  if (currentBufferSource && currentBuffer) {
-    console.log(audioContext.currentTime, currentBufferSource);
-    const currentTime = audioContext.currentTime - currentBufferSource.startTime
-    const duration = currentBuffer.duration
-    const progress = (currentTime / duration) * 100
-    progressSlider.value = progress
-
-    progressTimeElement.textContent = formatTime(currentTime)
-    totalTimeElement.textContent = formatTime(duration)
-  }
-  requestAnimationFrame(updateProgress)
-}*/
 
 function updateProgress() {
-  if(isNaN(audio.duration)) return;
-  const currentTime = audio.currentTime;
-  const duration = audio.duration;
+  if (!currentBuffer || !currentBufferSource || startTime === null) return;
+  const currentTime = audioContext.currentTime - startTime;
+  const duration = currentBuffer.duration;
+
+  if (currentTime >= duration) {
+    return;
+  }
 
   const progressPercentage = (currentTime / duration) * 100;
   progressSlider.value = progressPercentage;
 
-  const currentMinutes = Math.floor(currentTime / 60);
+  const currentHours = Math.floor(currentTime / 3600);
+  const currentMinutes = Math.floor((currentTime % 3600) / 60);
   const currentSeconds = Math.floor(currentTime % 60);
-  const durationMinutes = Math.floor(duration / 60);
+  const durationHours = Math.floor(duration / 3600);
+  const durationMinutes = Math.floor((duration % 3600) / 60);
   const durationSeconds = Math.floor(duration % 60);
 
-  progressTime.textContent = `${currentMinutes}:${currentSeconds.toString().padStart(2, '0')}`;
-  totalTime.textContent = `${durationMinutes}:${durationSeconds.toString().padStart(2, '0')}`;
+  progressTime.textContent = `${currentHours.toString().padStart(2, '0')}:${currentMinutes.toString().padStart(2, '0')}:${currentSeconds.toString().padStart(2, '0')}`;
+  totalTime.textContent = `${durationHours.toString().padStart(2, '0')}:${durationMinutes.toString().padStart(2, '0')}:${durationSeconds.toString().padStart(2, '0')}`;
 
-  if (!audio.paused) {
+  if (audioContext.state === 'running') {
     requestAnimationFrame(updateProgress);
   }
 }
 
-
-updateProgress()
-
 progressSlider.addEventListener('input', () => {
   if (currentBufferSource && currentBuffer) {
-    const progress = parseFloat(progressSlider.value)
-    const seekTime = (progress / 100) * currentBuffer.duration
-    currentBufferSource.stop()
-    currentBufferSource = audioContext.createBufferSource()
-    currentBufferSource.buffer = currentBuffer
-    currentBufferSource.connect(audioContext.destination)
-    currentBufferSource.start(audioContext.currentTime, seekTime)
+    const progress = parseFloat(progressSlider.value);
+    const seekTime = (progress / 100) * currentBuffer.duration;
 
-    // Preload and play the next track when the current track ends
+    startTime = audioContext.currentTime - seekTime;
+    
+    // Remove the onended event listener
+    currentBufferSource.onended = null;
+    
+    currentBufferSource.stop();
+    currentBufferSource = audioContext.createBufferSource();
+    currentBufferSource.buffer = currentBuffer;
+    currentBufferSource.connect(audioContext.destination);
+    currentBufferSource.start(audioContext.currentTime, seekTime);
+
+    // Reattach the onended event listener
     currentBufferSource.onended = () => {
       if (nextBuffer) {
-        playBuffer(nextBuffer)
-        currentTrackIndex++
-        preloadNextTrack()
+        playBuffer(nextBuffer);
+        currentTrackIndex++;
+        preloadNextTrack();
       }
     };
   }
-})
+});

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gapless M4A ALAC Player</title>
+  <style>
+    button {
+      font-size: 32px;
+      color: black;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aurora.js/0.4.2/aurora.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aurora.js-alac/0.1.0/alac.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ffmpeg/0.11.6/ffmpeg.min.js"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.9.5/dist/ffmpeg.min.js"></script> -->
+</head>
+<body>
+  <button id="previous">&#x23ee;</button>
+  <button id="play">&#x23ef;</button>
+  <button id="pause">&#x23f8;</button>
+  <button id="next">&#x23ed;</button>
+  <br>
+  <input type="range" id="progress" min="0" max="100" step="0.1" value="0">
+  <br>
+  <span id="progress-time">00:00:00</span> / <span id="total-time">00:00:00</span>
+  <br>
+  <span id="track-name"></span>
+
+  <script src="player.js"></script>
+</body>
+</html>

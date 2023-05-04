@@ -1,1 +1,3 @@
 tracks/*
+!tracks/.keep
+.DS_Store

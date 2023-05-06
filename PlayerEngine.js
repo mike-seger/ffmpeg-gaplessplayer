@@ -6,7 +6,6 @@ export default class PlayerEngine {
 		this.currentBufferSource = null
 		this.currentTrackIndex = 0
 		this.currentBuffer = null
-		this.loadingNext = false
 		this.nextBuffer = null
 	}
 
@@ -36,10 +35,11 @@ export default class PlayerEngine {
 		}
 
 		this.currentBuffer = buffer
+
 		this.currentBufferSource = this.audioContext.createBufferSource()
+
 		this.currentBufferSource.buffer = this.currentBuffer
 		this.currentBufferSource.connect(this.audioContext.destination)
-
 		this.startTime = this.audioContext.currentTime
 		this.currentBufferSource.start(this.startTime)
 		this.preloadNextTrack()
@@ -48,15 +48,12 @@ export default class PlayerEngine {
 	preloadNextTrack() {
 		const nextIndex = (this.currentTrackIndex + this.playlist.length + 1) % this.playlist.length
 		if (nextIndex < this.playlist.length) {
-			if(this.loadingNext) return;
 			this.nextBuffer = null
 			this.loadBuffer(this.playlist[nextIndex], (buffer) => {
 				this.nextBuffer = buffer
-				console.log("NT1: "+nextIndex)
 			})
 		} else {
 			this.nextBuffer = null
-			console.log("NT2: "+nextIndex)
 		}
 	}
 
@@ -84,7 +81,7 @@ export default class PlayerEngine {
 			if (offset === 1 && this.nextBuffer) {
 				this.playBuffer(this.nextBuffer)
 				this.preloadNextTrack()
-			} else if(!this.loadingNext) {
+			} else {
 				this.loadBuffer(this.playlist[this.currentTrackIndex], (buffer) => {
 					this.playBuffer(buffer)
 				})
@@ -113,7 +110,6 @@ export default class PlayerEngine {
 
 			// Reattach the onended event listener
 			this.currentBufferSource.onended = () => {
-				console.log("track ended: ")
 				this.next()
 			}
 		}
@@ -134,5 +130,3 @@ export default class PlayerEngine {
 		return this.currentBuffer?this.currentBuffer.duration:0
 	}
 }
-
-	

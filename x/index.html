@@ -1,186 +1,20 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head><title>Gapless 5 - Demonstration Page</title>
+<head><title>Gapless 5 Player</title>
   <meta name="viewport" content="width=400" />
   <link rel="stylesheet" href="gapless5.css" type="text/css" />
-  <link rel="shortcut icon" href="#" />
   <script type='text/javascript' src='gapless5.js'></script>
-
   <style type="text/css">
-
-  body {
-    font-family: Arial, Helvetica, Geneva, sans-serif;
-    margin-left: 2em;
-  }
-  h1,h2,h3,h4,h5 {
-    font-weight: 500;
-    margin-bottom: .25em;
-  }
-  h4 {
-    margin-top: 10px;
-    margin-bottom: 10px;
-  }
-  a {
-    text-decoration: none;
-  }
-  table {
-    border: 1px solid #000;
-    padding: 0 1em 1em 1em;
-    width: 350px;
-  }
-  td {
-    padding: 0;
-    margin: 0;
-  }
-  table td:nth-child(1) {
-    vertical-align: top;
-    width: 200px;
-  }
-  table td:nth-child(2) {
-    vertical-align: top;
-    padding-left: 2em;
-    width: 150px;
-  }
-  p {
-    font-size: 75%;
-  }
-  ul, li {
-    font-size: 80%;
-    list-style-type: none;
-    padding-left: 0;
-    margin-bottom: 0;
-  }
-
+    body { font-family: Arial, Helvetica, Geneva, sans-serif; font-size: 12px; }
   </style>
-
 </head>
 <body>
-  <h1>Gapless 5 - Demonstration Page</h1>
-  <small>A gapless JavaScript/CSS audio player for HTML5
-    <p>Learn more and download from <a href="https://github.com/regosen/Gapless-5">Github Page</a></p>
-  </small>
-
-  <!-- <table>
-    <tr><td>
-     <h4>Single Loop</h4>
-     <span id="g5-drums1"></span>
-    </td><td>
-      <p>Keystrokes:</p>
-      <ul>
-        <li>1: cue</li>
-        <li>2: play/pause</li>
-        <li>3: stop</li>
-        <hr/>
-        <li>s: speed toggle</li>
-        <li>v: volume toggle</li>
-      </ul>
-    </td></tr>
-    <tr><td colspan=2>
-      <form>
-        <p>Choose a file to replace the loop:</p>
-        <input type="file" id="gapless-file-input" accept="audio/*">
-      </form>
-    </td></tr>
-  </table>
-  <br/>
-  <table>
-    <tr><td>
-     <h4>Crossfading Chords</h4>
-     <span id="g5-synths"></span>
-    </td><td>
-      <p>Keystrokes:</p>
-      <ul>
-        <li>6: prev track</li>
-        <li>7: cue</li>
-        <li>8: play/pause</li>
-        <li>9: stop</li>
-        <li>0: next track</li>
-        <hr/>
-        <li>c: crossfade toggle</li>
-        <li>s: speed toggle</li>
-        <li>v: volume toggle</li>
-        <li>q: queue 3rd track</li>
-      </ul>
-    </td></tr>
-  </table>
-  <br/> -->
-  <table>
-    <tr><td>
-     <h4>Seamless Album</h4>
-     <span id="g5-album"></span>
-     <p>
-      Title: <span id="album-title"></span><br />
-      Artist: Rego Sen<br />
-      Album: Observer<br />
-      Year: 2000<br />
-     </p>
-    </td><td>
-      <p>Note: not every track has a transition.  Click below to read more about the album.</p>
-      <p>
-        <a href="../index-music.htm#obs" target="_blank"><img src="../images/observer-cover-small.jpg" width="110"></a>
-      </p>
-    </td></tr>
-  </table>
-
-  <script type="text/javascript"><!--
+  <span id="g5-album"></span>
+  <span id="album-title"></span>
+  <script type="text/javascript">
     const logLevel = LogLevel.Debug;
-    const crossfadeMS = 500;
-    const crossfadeShortMS = 25;
     let speedToggle = false;
     let volumeToggle = false;
-
-    // const isCharI = (keyCode, char) => 
-    //   keyCode === char.toLowerCase().charCodeAt(0) || keyCode === char.toUpperCase().charCodeAt(0);
-
-    // document.addEventListener('keydown', (e) => {
-    //   const keyCode = e.key.charCodeAt(0);
-    //   if (isCharI(keyCode, 's')) {
-    //     speedToggle = !speedToggle;
-    //     singlePlayer.setPlaybackRate(speedToggle ? 1.5 : 1);
-    //     multiPlayer.setPlaybackRate(speedToggle ? 0.75 : 1);
-    //   } else if (isCharI(keyCode, 'v')) {
-    //     volumeToggle = !volumeToggle;
-    //     singlePlayer.setVolume(volumeToggle ? 0.25 : 1);
-    //     multiPlayer.setVolume(volumeToggle ? 0.25 : 1);
-    //   } else if (isCharI(keyCode, 'q')) {
-    //     multiPlayer.queueTrack(2);
-    //   } else if (isCharI(keyCode, 'c')) {
-    //     multiPlayer.setCrossfade(multiPlayer.crossfade === crossfadeMS ? 0 : crossfadeMS);
-    //   }
-    // });
-
-    // const singlePlayer = new Gapless5({
-    //   guiId: 'g5-drums1',
-    //   loop: true,
-    //   tracks: 'psounds/Drumloop.wav',
-    //   logLevel,
-    //   mapKeys: {cue: '1', playpause: '2', stop: '3'},
-    //   layout: { fontFamily: 'Courier', fontSize: '8px', hidePositionText: true },
-    // });
-
-    // document.getElementById('gapless-file-input').onchange = function() {
-    //   const file = this.files[0];
-    //   if (file) {
-    //     singlePlayer.removeAllTracks();
-    //     singlePlayer.addTrack(URL.createObjectURL(file));
-    //   }
-    // };
-
-    // const multiPlayer = new Gapless5({
-    //   //useWebAudio: false,
-    //   guiId: 'g5-synths',
-    //   loop: true,
-    //   crossfade: crossfadeMS,
-    //   crossfadeShape: CrossfadeShape.EqualPower,
-    //   tracks: ['psounds/Synth1.wav', 'psounds/Synth4.wav'],
-    //   logLevel,
-    //   mapKeys: {prevtrack: '6', cue: '7', playpause: '8', stop: '9', next: '0'},
-    // });
-    // multiPlayer.insertTrack(1, 'psounds/Synth2.wav');
-
-    // pressing play while loading doesn't queue play without HTML5Audio
-    const localMode = window.location.href === 'http://localhost:8000/';
     const albumPlayer = new Gapless5({
       guiId: 'g5-album',
       tracks: [
@@ -191,19 +25,21 @@
       ].map(file => `../../tracks/${file}.flac`),
       logLevel,
       shuffleButton: false,
-      crossfade: crossfadeShortMS,
-      loadLimit: 2,
+      loadLimit: 3,
     });
 
     const updateAlbumTitle = () => {
+      const t = albumPlayer.currentSource().audioPath
+        .replace(/.*\//,"").replace(/.flac$/,"").replace(/ - /, ": ")
+        .replace(/ - [0-9. ]*/, "<br>")
+      console.log(t)
       const [ title ] = albumPlayer.currentSource().audioPath.split(' - ')[1].split('.');
-      document.getElementById('album-title').innerHTML = title;
+      document.getElementById('album-title').innerHTML = t;
     };
     updateAlbumTitle();
     albumPlayer.onprev = updateAlbumTitle;
     albumPlayer.onnext = updateAlbumTitle;
 
-  --></script>
-
+  </script>
 </body>
 </html>

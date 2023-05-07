@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gapless.flac ALAC Player</title>
+  <style>
+    button {
+      font-size: 32px;
+      background-color: black;
+    }
+
+    #gapless5-player-id {
+      width: 300px;
+      height: 150px;
+      background-color: rgb(29, 104, 37);
+    }
+  </style>
+
+
+  <link href="gapless5.css" rel="stylesheet" type="text/css" />
+  <script src="gapless5.js" language="JavaScript" type="text/javascript"></script>
+  <script>
+    const localMode = window.location.href === 'http://127.0.0.1:7801/gapless5/index.html';
+    const player = new Gapless5({
+        guiId: 'gapless5-player-id',
+        tracks: [
+            '../tracks/alpha - space dream - 01. das licht - traumwelten.flac',
+            '../tracks/alpha - space dream - 02. vectrex - meteor (armageddon club mix).flac',
+            '../tracks/alpha - space dream - 03. jupiter prime - gate to heaven.flac',
+            '../tracks/alpha - space dream - 04. armin - communication.flac',
+        ],
+        // loop: true,
+        loadLimit: 4,
+        // mapKeys: {prev: 'a', playpause: 's', stop: 'd', next: 'f'},
+    });
+    //player.addTrack('audio/song1.mp3');
+    player.play();
+  </script>
+</head>
+<body>
+
+<!-- then in body: -->
+<div id="gapless5-player-id" />
+
+</body>
+</html>

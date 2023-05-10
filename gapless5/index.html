@@ -24,10 +24,50 @@
         'alpha - space dream - 02. vectrex - meteor (armageddon club mix)',
         'alpha - space dream - 03. jupiter prime - gate to heaven',
         'alpha - space dream - 04. armin - communication',
+        'alpha - space dream - 05. veracocha - carte blanche (orig. mix)',
+        'alpha - space dream - 06. aurora - hear you calling (dark moon remix)',
+        'alpha - space dream - 07. triple concept - tone twister',
+        'alpha - space dream - 08. m.u.t.e. - dial me (dj pierre hiver flight over hamburg remix)',
+        'alpha - space dream - 09. driver project - join me (julian d\'or club mix)',
+        'alpha - space dream - 10. kasai - passion',
+        'alpha - space dream - 11. dark moon - zeitreise',
+        'alpha - space dream - 12. des mitchell - welcome to the dance (part 2)',
+        'alpha - space dream - 13. kenji ogura - cyber tech',
+        'alpha - space dream - 14. solange - messages (ferry corsten+dj tiesto mix)',
+        'beta - dark planet - 01. dj crack - space people 2000',
+        'beta - dark planet - 02. tomcraft vs. sunbeam - versus',
+        'beta - dark planet - 03. hypetraxx - the darkside (non vocal)',
+        'beta - dark planet - 04. taucher - science fiction (cosmic gate mix)',
+        'beta - dark planet - 05. jens mahlstedt - psychostrings (kay cee remix)',
+        'beta - dark planet - 06. visiontool - epic garden',
+        'beta - dark planet - 07. the diggerman meets escalation - sidewalk cafe (mars inc. extended rmx)',
+        'beta - dark planet - 08. syntone - connected to the world',
+        'beta - dark planet - 09. criss source - miami 3000',
+        'beta - dark planet - 10. body shock - full moon',
+        'beta - dark planet - 11. heliotropic feat. verna v. - alive (dumonde remix)',
+        'beta - dark planet - 12. dj jamx - !keep it that way! (dj pulsedriver remix)',
+        'beta - dark planet - 13. sebastian - toccata',
+        'gamma - nebula - 01. bedrock - heaven scent',
+        'gamma - nebula - 02. king of house - united music',
+        'gamma - nebula - 03. the quest - c sharp',
+        'gamma - nebula - 04. dj rock - survival',
+        'gamma - nebula - 05. rom & comix - the day after',
+        'gamma - nebula - 06. s2 - instinct',
+        'gamma - nebula - 07. mauro picotto - komodo',
+        'gamma - nebula - 08. vip 3000 - select start',
+        'gamma - nebula - 09. mothers pride - learning to fly (mistral rmx)',
+        'gamma - nebula - 10. vip 3000 - nosedive',
+        'gamma - nebula - 11. van gott - world of love',
+        'gamma - nebula - 12. lava - autumn (the fall mix)',
+        'gamma - nebula - 13. lunatic asylum - energy flow (plug\'n play rmx)',
+        'gamma - nebula - 14. solidsleep - heartbeat',
+        'gamma - nebula - 15. novascotia - novascotia (deep trance rmx)',
+        'gamma - nebula - 16. katana - silence',
+        'gamma - nebula - 17. b-voice - eternity 2000 (fridge rmx)',
       ].map(file => `../../tracks/${file}.flac`),
       logLevel,
       shuffleButton: false,
-      loadLimit: 3,
+      loadLimit: 1,
     })
 
     const updateAlbumTitle = () => {
@@ -39,7 +79,6 @@
     updateAlbumTitle()
     albumPlayer.onprev = updateAlbumTitle
     albumPlayer.onnext = updateAlbumTitle
-
   </script>
 </body>
 </html>

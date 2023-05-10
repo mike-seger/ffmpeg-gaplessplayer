@@ -1301,7 +1301,7 @@ function Gapless5(options = {}, deprecated = {}) { // eslint-disable-line no-unu
     let wantsCallback = true;
     let track = 0;
     let playlistIndex = this.getIndex();
-    const position = currentSource.getPosition();
+    /*const position = currentSource.getPosition();
     if (position > 0) {
       // jump to start of track if we're not there
       this.scrub(0, true);
@@ -1309,7 +1309,7 @@ function Gapless5(options = {}, deprecated = {}) { // eslint-disable-line no-unu
       this.playlist.setCrossfade(0, this.crossfade);
       track = playlistIndex;
       wantsCallback = false;
-    } else if (this.singleMode && this.loop) {
+    } else*/ if (this.singleMode && this.loop) {
       track = playlistIndex;
     } else if (playlistIndex > 0) {
       track = playlistIndex - 1;
@@ -1537,6 +1537,7 @@ function Gapless5(options = {}, deprecated = {}) { // eslint-disable-line no-unu
     <div class="g5buttons" id="${elemId('buttons')}">
       <button class="g5button g5prev" id="${elemId('prev')}"></button>
       <button class="g5button g5play" id="${elemId('play')}"></button>
+      <!-- button class="g5button g5play" id="${elemId('play')}">&#xE037;</button -->
       <button class="g5button g5stop" id="${elemId('stop')}"></button>
       <button class="g5button g5shuffle" id="${elemId('shuffle')}"></button>
       <button class="g5button g5next" id="${elemId('next')}"></button>

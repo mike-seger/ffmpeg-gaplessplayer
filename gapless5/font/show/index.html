@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Audio playlist</title>
+	<meta charset="utf-8">
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1.0, minimal-ui,
+			minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style>
+        @font-face {
+            font-family: 'Material Icons Round-Regular';
+            font-style: normal;
+            font-weight: normal;
+            font-display: swap;
+            src: url('../player.otf') format('opentype');
+        }
+
+        body {
+            font-family: "Material Icons Round-Regular";
+            font-size: 36px;
+        }
+    </style>
+</head>
+
+<body>
+    <script type="module">
+        function showSymbols(text) {
+            const content = text
+                .replaceAll("\r", "")
+                .split("\n")
+                .filter(line => line.includes("U"))
+                .map(line => {
+                    const code = line.substring(2);
+                    return "&amp;#x" + code + " = &#x" + code +";<br />\n";
+                }).join();
+            document.body.innerHTML = content.replaceAll(",", "");
+        }
+        fetch("../used-symbols.txt")
+            .then((response) => response.text()
+                .then((text) => showSymbols(text)));
+    </script>
+</body>
+
+</html>

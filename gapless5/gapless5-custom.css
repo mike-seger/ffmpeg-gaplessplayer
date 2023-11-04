@@ -11,11 +11,13 @@
 @font-face {
   font-family: sans-font;
   /* src: url('font/MartelSans-Regular.ttf'); */
-  /* src: url('font/Nordnet-Sans-Light.otf'); */
   src: url('font/PublicSans-Regular.otf');
-  /* src: url('font/Atkinson-Hyperlegible-Regular-102.otf'); */
-  src: url('font/RedHatText-Regular.otf');
-  /* src: url('font/NotoSans-Regular.ttf'); */
+  /* src: url('font/Nordnet-Sans-Light.otf'); */
+  /* src: url('font/Nordnet-Sans.otf'); */
+}
+
+body * {
+  font-family: sans-font;
 }
 
 :root { 
